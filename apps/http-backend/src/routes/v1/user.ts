@@ -3,6 +3,7 @@ import { verifyToken, generateToken } from "authenticator";
 import { client } from "@repo/db/client";
 import jwt from "jsonwebtoken";
 import { JWT_PASSWORD } from "../../config";
+import { sendMessage } from "../../utils/twilio";
  const router : Router = Router();
 
  router.post("/signup", async(req, res) => {
@@ -23,7 +24,17 @@ import { JWT_PASSWORD } from "../../config";
     });
 
     if(process.env.NODE_ENV === "production"){
-        // send otp to user's phone number 
+        // send otp to user's phone number
+        try {
+            await sendMessage(number, `Your OTP for signing up is ${totp}`);
+        }
+        catch (e){
+            res.status(500).json({
+                message: "Failed to send OTP. Please try again later."
+            });
+            return;
+        }
+    
     }
    
 

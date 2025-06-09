@@ -21,7 +21,9 @@
     "@types/jsonwebtoken": "^9.0.9",
     "authenticator": "^1.1.5",
     "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "twilio": "^5.7.0"
   }
 }
