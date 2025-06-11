@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { verifyToken, generateToken } from "authenticator";
 import { client } from "@repo/db/client";
 import jwt from "jsonwebtoken";
 import { JWT_PASSWORD } from "../../config";
 import { sendMessage } from "../../utils/twilio";
+import { getToken, verifyToken } from "../../utils/totp";
  const router : Router = Router();
 
  router.post("/signup", async(req, res) => {
-    const number = req.body.phoneNumber;
-    const totp = generateToken(number + "SIGNUP");
+    const number = req.body.number;
+    const totp = getToken(number, "AUTH");
     // send totp to phone number
     const user = await client.user.upsert({
         where:{
@@ -26,7 +26,7 @@ import { sendMessage } from "../../utils/twilio";
     if(process.env.NODE_ENV === "production"){
         // send otp to user's phone number
         try {
-            await sendMessage(number, `Your OTP for signing up is ${totp}`);
+            await sendMessage(`Your OTP for signing up is ${totp}`, number);
         }
         catch (e){
             res.status(500).json({
@@ -45,17 +45,18 @@ import { sendMessage } from "../../utils/twilio";
  });
 
  router.post("/signup/verify", async(req, res) => {
-    const number = req.body.phoneNumber;
+    const number = req.body.number;
     const name = req.body.name;
-    const totp = generateToken(number + "SIGNUP");
-    if(!verifyToken(number + "SIGNUP", req.body.otp)){
+    const otp = req.body.totp;
+
+    if(process.env.NODE_ENV === "production" && !verifyToken(number, "AUTH", otp)){
         res.json({
             message : "Invalid OTP"
         })
         return;
     }
 
-    const userId = await client.user.update({
+    const user = await client.user.update({
         where: {
             number
         },
@@ -65,7 +66,57 @@ import { sendMessage } from "../../utils/twilio";
         }
     })
     const token = jwt.sign({
-        userId
+        userId: user.id
+    }, JWT_PASSWORD)
+    // set user to verified in database
+
+    res.json({
+        token
+    });
+ });
+
+  router.post("/signin", async(req, res) => {
+    const number = req.body.number;
+    const totp = getToken(number, "AUTH");
+    // send totp to phone number
+    if(process.env.NODE_ENV === "production"){
+        // send otp to user's phone number
+        try {
+            await sendMessage(`Your OTP for signing up is ${totp}`, number);
+        }
+        catch (e){
+            res.status(500).json({
+                message: "Failed to send OTP. Please try again later."
+            });
+            return;
+        }
+    
+    }
+   
+
+
+    res.json({
+        message: "OTP sent to your phone number"
+     })
+ });
+
+  router.post("/signin/verify", async(req, res) => {
+    const number = req.body.number;
+    const otp = req.body.totp;
+    if(process.env.NODE_ENV === "production" && !verifyToken(number,  "AUTH", otp)){
+        res.json({
+            message : "Invalid OTP"
+        })
+        return;
+    }
+
+    const user = await client.user.findFirstOrThrow({
+        where: {
+            number
+        }
+    })
+    const token = jwt.sign({
+        userId: user.id
     }, JWT_PASSWORD)
     // set user to verified in database
 
