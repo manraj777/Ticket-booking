@@ -78,6 +78,13 @@ import { getToken, verifyToken } from "../../utils/totp";
   router.post("/signin", async(req, res) => {
     const number = req.body.number;
     const totp = getToken(number, "AUTH");
+
+    const user = await client.user.findFirstOrThrow({
+        where: {
+            number
+        }
+    });
+
     // send totp to phone number
     if(process.env.NODE_ENV === "production"){
         // send otp to user's phone number

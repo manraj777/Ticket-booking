@@ -14,6 +14,7 @@ describe("Signup endpoint", () => {
         });
 
         const response2 = await axios.post(`${BACKEND_URL}/api/v1/user/signup/verify`, {
+            number: PHONE_NUMBER_1,
             name: NAME1, 
             otp: "000000",
         });
@@ -51,4 +52,16 @@ describe("Signin endpoint", () => {
         expect(response2.data.token).not.toBeNull();
 
     });
+
+
+    expect(async() => {
+        it('Signin doesnt works for user how doesnt exits in db', async () => {
+            await axios.post(`${BACKEND_URL}/api/v1/user/signin`, {
+                number: PHONE_NUMBER_1 + "123",
+            });
+
+        });
+    }).toThrow()
+    
+
 })

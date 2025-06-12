@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use("/api/v1", v1Router);
 app.use((req: Request, res: Response, next: NextFunction) => {
-    res.status(404).json({
+    res.status(500).json({
         message: "Not Found"
     });
 })
