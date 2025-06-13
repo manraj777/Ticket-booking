@@ -78,33 +78,40 @@ import { getToken, verifyToken } from "../../utils/totp";
   router.post("/signin", async(req, res) => {
     const number = req.body.number;
     const totp = getToken(number, "AUTH");
+    try {
+            const user = await client.user.findFirstOrThrow({
+            where: {
+                number
+            }
+        });
 
-    const user = await client.user.findFirstOrThrow({
-        where: {
-            number
+        // send totp to phone number
+        if(process.env.NODE_ENV === "production"){
+            // send otp to user's phone number
+            try {
+                await sendMessage(`Your OTP for signing up is ${totp}`, number);
+            }
+            catch (e){
+                res.status(500).json({
+                    message: "Failed to send OTP. Please try again later."
+                });
+                return;
+            }
+        
         }
-    });
-
-    // send totp to phone number
-    if(process.env.NODE_ENV === "production"){
-        // send otp to user's phone number
-        try {
-            await sendMessage(`Your OTP for signing up is ${totp}`, number);
-        }
-        catch (e){
-            res.status(500).json({
-                message: "Failed to send OTP. Please try again later."
-            });
-            return;
-        }
-    
+        res.json({
+            message: "OTP sent to your phone number"
+        })
     }
-   
+    
+   catch(e){
+        res.status(411).json({
+            message: "User not invalid."
+        });
+   }
 
 
-    res.json({
-        message: "OTP sent to your phone number"
-     })
+    
  });
 
   router.post("/signin/verify", async(req, res) => {

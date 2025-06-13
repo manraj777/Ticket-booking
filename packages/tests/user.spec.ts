@@ -3,8 +3,8 @@ import axios from "axios";
 
 const BACKEND_URL = 'http://localhost:8080';
 
-const PHONE_NUMBER_1 = '+1234567890';
-const NAME1 = 'John Doe';
+const PHONE_NUMBER_1 = '6261543983';
+const NAME1 = 'Manraj';
 
 describe("Signup endpoint", () => {
 
