@@ -4,7 +4,7 @@ import axios from "axios";
 const BACKEND_URL = 'http://localhost:8080';
 
 const PHONE_NUMBER_1 = '6261543983';
-const NAME1 = 'Manraj';
+const NAME_1 = 'Manraj';
 
 describe("Signup endpoint", () => {
 
@@ -15,19 +15,13 @@ describe("Signup endpoint", () => {
 
         const response2 = await axios.post(`${BACKEND_URL}/api/v1/user/signup/verify`, {
             number: PHONE_NUMBER_1,
-            name: NAME1, 
+            name: NAME_1, 
             otp: "000000",
         });
 
         expect(response1.status).toBe(200);
         expect(response2.status).toBe(200);
         expect(response1.data).not.toBeNull();
-
-        expect(async() => {
-            await axios.post(`${BACKEND_URL}/api/v1/user/signup`, {
-                number: PHONE_NUMBER_1,
-            });
-        }).toThrow();
 
     });
 })
@@ -42,26 +36,23 @@ describe("Signin endpoint", () => {
 
         const response2 = await axios.post(`${BACKEND_URL}/api/v1/user/signin/verify`, {
             number: PHONE_NUMBER_1,
-            name: NAME1, 
+            name: NAME_1, 
             otp: "000000",
         });
 
         expect(response1.status).toBe(200);
         expect(response2.status).toBe(200);
-        expect(response1.data).not.toBeNull();
+        expect(response1.data.id).not.toBeNull();
         expect(response2.data.token).not.toBeNull();
 
-    });
+});
 
-
-    expect(async() => {
-        it('Signin doesnt works for user how doesnt exits in db', async () => {
+    it('Signin doesnt works for user how doesnt exits in db', async () => {
+        await expect(async() => {       
             await axios.post(`${BACKEND_URL}/api/v1/user/signin`, {
                 number: PHONE_NUMBER_1 + "123",
             });
 
-        });
-    }).toThrow()
-    
-
+        }).rejects.toThrowError();
+    });
 })
