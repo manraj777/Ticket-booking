@@ -21,7 +21,7 @@ describe("Signup endpoint", () => {
 
         expect(response1.status).toBe(200);
         expect(response2.status).toBe(200);
-        expect(response1.data).not.toBeNull();
+        expect(response1.data.id).not.toBeNull();
 
     });
 })
