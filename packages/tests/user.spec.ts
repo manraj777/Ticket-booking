@@ -1,5 +1,5 @@
 import { describe, expect, test, it} from 'vitest';
-import axios from "axios";
+import { axios } from "./axios";
 
 const BACKEND_URL = 'http://localhost:8080';
 
@@ -48,11 +48,11 @@ describe("Signin endpoint", () => {
 });
 
     it('Signin doesnt works for user how doesnt exits in db', async () => {
-        await expect(async() => {       
-            await axios.post(`${BACKEND_URL}/api/v1/user/signin`, {
-                number: PHONE_NUMBER_1 + "123",
-            });
+        
+        const response = await axios.post(`${BACKEND_URL}/api/v1/user/signin`, {
+            number: PHONE_NUMBER_1 + "123",
+        });
+        expect(response.status).toBe(411);
 
-        }).rejects.toThrowError();
     });
 })
