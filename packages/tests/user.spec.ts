@@ -6,7 +6,7 @@ const BACKEND_URL = 'http://localhost:8080';
 const PHONE_NUMBER_1 = '6261543983';
 const NAME_1 = 'Manraj';
 
-describe("Signup endpoint", () => {
+describe("User Signup endpoint", () => {
 
     it('Double signup doesnt work', async () => {
         const response1 = await axios.post(`${BACKEND_URL}/api/v1/user/signup`, {
@@ -56,3 +56,14 @@ describe("Signin endpoint", () => {
 
     });
 })
+ describe("events", () => {
+    it('Can create an event', async() => {
+        const response = await axios.post(`${BACKEND_URL}/api/v1/event/create`, {
+            name: "Live event latent fest",
+            description: "Latent fest is a premer fest for members",
+            startTime: "2022-10-10 T10:00:00Z",
+            location: "Test Location",
+        });
+        expect(response.status).toBe(200);
+    })
+ })

@@ -30,6 +30,7 @@ model Admin {
   name         String
   verified     Boolean        @default(false)
   event        Event[]
+  startTime    DateTime
 }
 
 model Event {
@@ -41,6 +42,8 @@ model Event {
   admin        Admin          @relation(fields: [adminId], references: [id])
   bookings     Booking[]
   payments     Payment[]
+  locationId   String
+  location     Location       @relation(fields: [locationId], references: [id])
 }
 
 model Booking {
@@ -77,6 +80,14 @@ model Payment {
   status       PaymentState
   user         User           @relation(fields: [userId], references: [id])
   event        Event          @relation(fields: [eventId], references: [id])
+}
+
+model Location {
+  id           String         @id           @default(uuid())
+  name         String
+  discription  String
+  imageUrl     String
+  event        Event[]
 }
 
 enum PaymentState {
