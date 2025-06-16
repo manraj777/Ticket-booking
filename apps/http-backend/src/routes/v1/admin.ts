@@ -10,7 +10,7 @@ router.post("/signin", async(req, res) => {
     const number = req.body.number;
     const totp = getToken(number, "AUTH");
     try {
-            const user = await client.user.findFirstOrThrow({
+        await client.admin.findFirstOrThrow({
             where: {
                 number
             }
