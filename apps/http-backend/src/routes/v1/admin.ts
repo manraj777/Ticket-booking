@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { client } from "@repo/db/client";
 import jwt from "jsonwebtoken";
-import { JWT_PASSWORD } from "../../config";
+import { ADMIN_JWT_PASSWORD } from "../../config";
 import { sendMessage } from "../../utils/twilio";
 import { getToken, verifyToken } from "../../utils/totp";
 const router : Router = Router();
 
 router.post("/signin", async(req, res) => {
     const number = req.body.number;
-    const totp = getToken(number, "AUTH");
+    const totp = getToken(number, "ADMIN_AUTH");
     try {
         await client.admin.findFirstOrThrow({
             where: {
@@ -20,7 +20,7 @@ router.post("/signin", async(req, res) => {
         if(process.env.NODE_ENV === "production"){
             // send otp to user's phone number
             try {
-                await sendMessage(`Your OTP for signing up is ${totp}`, number);
+                await sendMessage(`Your admin OTP for signing up is ${totp}`, number);
             }
             catch (e){
                 res.status(500).json({
@@ -48,7 +48,7 @@ router.post("/signin", async(req, res) => {
   router.post("/signin/verify", async(req, res) => {
     const number = req.body.number;
     const otp = req.body.totp;
-    if(process.env.NODE_ENV === "production" && !verifyToken(number,  "AUTH", otp)){
+    if(process.env.NODE_ENV === "production" && !verifyToken(number,  "ADMIN_AUTH", otp)){
         res.json({
             message : "Invalid OTP"
         })
@@ -62,7 +62,7 @@ router.post("/signin", async(req, res) => {
     })
     const token = jwt.sign({
         userId: user.id
-    }, JWT_PASSWORD)
+    }, ADMIN_JWT_PASSWORD)
     // set user to verified in database
 
     res.json({
