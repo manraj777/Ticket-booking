@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { client } from "@repo/db/client";
 import jwt from "jsonwebtoken";
-import { JWT_PASSWORD } from "../../config";
-import { sendMessage } from "../../utils/twilio";
-import { getToken, verifyToken } from "../../utils/totp";
+import { JWT_PASSWORD } from "../../../config";
+import { sendMessage } from "../../../utils/twilio";
+import { getToken, verifyToken } from "../../../utils/totp";
  const router : Router = Router();
 
  router.post("/signup", async(req, res) => {
