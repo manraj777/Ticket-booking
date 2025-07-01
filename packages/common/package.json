@@ -1,5 +1,8 @@
 {
-  "name": "common",
+  "name": "@repo/common",
+  "exports" : {
+    "./types": "./src/types.ts"
+  },
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
