@@ -30,7 +30,6 @@ model Admin {
   name         String
   verified     Boolean        @default(false)
   event        Event[]
-  startTime    DateTime
 }
 
 model Event {
@@ -43,6 +42,7 @@ model Event {
   bookings     Booking[]
   payments     Payment[]
   locationId   String
+  startTime    DateTime
   location     Location       @relation(fields: [locationId], references: [id])
 }
 
