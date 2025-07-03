@@ -2,38 +2,43 @@ import { Router } from "express";
 import { client } from "@repo/db/client";
 import { getToken } from "../../../utils/totp";
 import { sendMessage } from "../../../utils/twilio";
+import { adminMiddleware } from "../../../middleware/admin";
+import { CreateEventSchema } from "@repo/common/types";
 
 const router: Router = Router();
 
-router.post("/create", async (req, res) => {
-    const number = req.body.number;
-    const topt = getToken(number,"AUTH");
+router.post("/", adminMiddleware, async (req, res) => {
 
-    const user = await client.user.upsert({
-        where: {
-            number
-        },
-        create: {
-            number,
-            name: ""
-        },
-        update: {
+    const {data, success} = CreateEventSchema.safeParse(req.body);
+    const adminId = req.userId;
 
-        }
-
-    });
-
-    if(process.env.NODE_ENV === "production") {
-        try {
-            await sendMessage(`Your authentication code is ${topt}`, number);
-        } catch (error) {
-            console.error("Failed to send message:", error);
-            return res.status(500).json({ error: "Failed to send authentication code." });
-        }
+    if(!success) {
+        res.status(400).json({
+            error: "Invalid request body"
+        })
+        return;
     }
+    try {
+        const event = await client.event.create({
+        data: {
+            name: data.name,
+            discription: data.description,
+            startTime: new Date(data.startTime),
+            locationId: data.locationId,
+            imageUrl: data.imageUrl
+        }
+    });
     res.json({
-        id : user.id
+        id : 
     })
+    } catch (error) {
+        console.error("Error creating event:", error);
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
 });
 
+
+    
 export default router;
