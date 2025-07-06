@@ -24,8 +24,7 @@ router.post("/", adminMiddleware, async (req, res) => {
             name: data.name,
             discription: data.description,
             startTime: new Date(data.startTime),
-            locationId: data.locationId,
-            imageUrl: data.imageUrl
+            locationId: data.location
         }
     });
     res.json({
