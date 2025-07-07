@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  //output   = "../generated/prisma"
 }
 
 datasource db {
@@ -30,12 +30,13 @@ model Admin {
   name         String
   verified     Boolean        @default(false)
   event        Event[]
+  type         AdminType
 }
 
 model Event {
   id           String         @id          @default(uuid())
   name         String
-  discription  String
+  description  String
   banner       String
   adminId      String
   admin        Admin          @relation(fields: [adminId], references: [id])
@@ -43,6 +44,7 @@ model Event {
   payments     Payment[]
   locationId   String
   startTime    DateTime
+  imageUrl     String
   location     Location       @relation(fields: [locationId], references: [id])
 }
 
@@ -67,7 +69,7 @@ model Seat{
 model SeatType{
   id           String         @id          @default(uuid())
   name         String
-  discription  String 
+  description  String 
   event        String
   price        Int
   seats        Seat[]
@@ -85,7 +87,7 @@ model Payment {
 model Location {
   id           String         @id           @default(uuid())
   name         String
-  discription  String
+  description  String
   imageUrl     String
   event        Event[]
 }
@@ -94,4 +96,9 @@ enum PaymentState {
   Success
   Fail
   Pending
+}
+
+enum AdminType {
+  SuperAdmin
+  Creator
 }

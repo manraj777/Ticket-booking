@@ -2,10 +2,11 @@ import { Router } from "express";
 import { client } from "@repo/db/client";
 import { adminMiddleware } from "../../../middleware/admin";
 import { CreateLocationSchema } from "@repo/common/types";
+import { superAdminMiddleware } from "../../../middleware/superadmin";
 
 const router: Router = Router();
 
-router.post("/", adminMiddleware, async (req, res) => {
+router.post("/", superAdminMiddleware, async (req, res) => {
     const { data, success } = CreateLocationSchema.safeParse(req.body);
     const adminId = req.userId;
 

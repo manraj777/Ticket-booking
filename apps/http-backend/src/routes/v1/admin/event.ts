@@ -12,6 +12,11 @@ router.post("/", adminMiddleware, async (req, res) => {
     const {data, success} = CreateEventSchema.safeParse(req.body);
     const adminId = req.userId;
 
+    if (!adminId) {
+        res.status(401).json({ error: "Unauthorized: adminId missing" });
+        return;
+    }
+
     if(!success) {
         res.status(400).json({
             error: "Invalid request body"
@@ -20,16 +25,19 @@ router.post("/", adminMiddleware, async (req, res) => {
     }
     try {
         const event = await client.event.create({
-        data: {
-            name: data.name,
-            discription: data.description,
-            startTime: new Date(data.startTime),
-            locationId: data.location
-        }
-    });
-    res.json({
-        id : 
-    })
+            data: {
+                name: data.name,
+                description: data.description,
+                startTime: new Date(data.startTime),
+                locationId: data.locationId,
+                imageUrl: data.imageUrl,
+                adminId,
+                banner: data.banner
+            }
+        });
+        res.json({
+            id : event.id
+        })
     } catch (error) {
         console.error("Error creating event:", error);
         res.status(500).json({

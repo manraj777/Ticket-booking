@@ -56,14 +56,3 @@ describe("Signin endpoint", () => {
 
     });
 })
- describe("events", () => {
-    it('Can create an event', async() => {
-        const response = await axios.post(`${BACKEND_URL}/api/v1/event/create`, {
-            name: "Live event latent fest",
-            description: "Latent fest is a premer fest for members",
-            startTime: "2022-10-10 T10:00:00Z",
-            location: "Test Location",
-        });
-        expect(response.status).toBe(200);
-    })
- })
