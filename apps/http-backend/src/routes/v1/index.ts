@@ -11,4 +11,9 @@ router.use("/admin/event", adminEventRouter);
 router.use("/admin/location", adminLocationRouter);
 router.use("/admin", adminRouter);
 
+if(process.env.NODE_ENV === "production") {
+// used only for testing purposes
+    router.use("/test", testRouter);
+}
+
 export default router;

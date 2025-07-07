@@ -2,29 +2,37 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 
-export const middleware = (secret: string) => (req: Request, res: Response, next: NextFunction): void => {
+export const middleware = (...secrets: string[]) => (req: Request, res: Response, next: NextFunction): void => {
+    
+    for(const secret of secrets) {
+        if(req.headers.authorization){
+            const tokenVerified = verifyToken(req, res, secret);
+            if(tokenVerified){
+                next();
+            }
+            
+        }
+    }
+    res.status(401).json({
+        message: "Unauthorized"
+    });
+    
+}
+export function verifyToken(req: Request, res: Response, secret: string): boolean {
     const token = req.headers.authorization;
         if (!token) {
-            res.status(401).json({
-                message: "Unauthorized"
-            });
-            return;
+            return false;
         }
         try{
             const decoded = jwt.verify(token, secret);
             if(typeof decoded === "string"){
-                res.status(401).json({
-                    message: "Unauthorized"
-                });
-                return;
+                return false;
             }
             req.userId = decoded.userId ;
-            next();
+            
         }
         catch(e){
-            res.status(401).json({
-                message: "Unauthorized"
-            });
-            return;
+            return false;
         }
+        return true;
 }
