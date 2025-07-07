@@ -1,7 +1,7 @@
 import { client, AdminType } from "@repo/db/client";
 import jwt from "jsonwebtoken";
 import { ADMIN_JWT_PASSWORD } from "../../config";
-export async function createAdmin(number: string, name: string){
+export async function createAdmin(number: string, name: string, type : string): Promise <string>{
     const admin = await client.admin.create({
         data: {
             number,
@@ -13,5 +13,7 @@ export async function createAdmin(number: string, name: string){
     
     const token = jwt.sign({
         userId: admin.id,
-    },ADMIN_JWT_PASSWORD)
+    },ADMIN_JWT_PASSWORD);
+
+    return token;
 }

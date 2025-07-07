@@ -46,6 +46,17 @@ router.post("/", adminMiddleware, async (req, res) => {
     }
 });
 
+router.get("/events", adminMiddleware, async (req, res) => {
+    const events = await client.event.findMany({
+        where: {
+            adminId: req.userId
+        }
+    });
+    res.json({
+        events
+    });
+});
+
 
     
 export default router;
