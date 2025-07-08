@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { client } from "@repo/db/client";
-import { getToken } from "../../../utils/totp";
-import { sendMessage } from "../../../utils/twilio";
 import { adminMiddleware } from "../../../middleware/admin";
 import { CreateEventSchema } from "@repo/common/types";
+import { getEvent } from "../../../controllers/events";
 
 const router: Router = Router();
 
@@ -57,6 +56,21 @@ router.get("/events", adminMiddleware, async (req, res) => {
     });
 });
 
+
+router.get("/events/:eventId", adminMiddleware, async (req, res) => {
+    const event = await getEvent(req.params.eventId ?? "");
+
+    if (!event) {
+        res.status(404).json({
+            error: "Event not found"
+        });
+        return;
+    }
+
+    res.json({
+        event
+    });
+})
 
     
 export default router;
