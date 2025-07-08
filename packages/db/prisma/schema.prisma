@@ -45,6 +45,8 @@ model Event {
   locationId   String
   startTime    DateTime
   imageUrl     String
+  published    Boolean        @default(false)
+  ended        Boolean        @default(false)
   location     Location       @relation(fields: [locationId], references: [id])
 }
 
