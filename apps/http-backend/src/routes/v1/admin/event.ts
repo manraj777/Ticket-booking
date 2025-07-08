@@ -66,7 +66,19 @@ router.put("/:eventId", adminMiddleware, async (req, res) => {
     }
 
     try {
-        const event = await client.event.update({
+        const event = await client.event.findUnique({
+            where: {
+                id: eventId
+            }
+        })
+        
+        if (!event || event.startTime > new Date() || event.adminId !== adminId) {
+            res.status(404).json({
+                error: "Cant update event"
+            });
+            return;
+        }
+        await client.event.update({
             where: {
                 id: eventId,
                 adminId: adminId
