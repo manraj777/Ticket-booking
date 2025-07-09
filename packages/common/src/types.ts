@@ -7,8 +7,10 @@ export const CreateEventSchema = z.object({
     location: z.string(),
     locationId: z.string(),
     imageUrl: z.string(),
-    banner: z.string()
-
+    banner: z.string(),
+    seats: z.array(z.object({
+        
+    }))
 })
 
 export const CreateLocationSchema = z.object({
