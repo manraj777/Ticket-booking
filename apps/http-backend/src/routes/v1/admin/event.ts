@@ -46,7 +46,7 @@ router.post("/", adminMiddleware, async (req, res) => {
 });
 
 
-router.put("/:eventId", adminMiddleware, async (req, res) => {
+router.put("/metadata/:eventId", adminMiddleware, async (req, res) => {
     const {data, success} = UpdateEventSchema.safeParse(req.body);
     const adminId = req.userId;
     const eventId = req.params.eventId ?? "";
@@ -72,7 +72,7 @@ router.put("/:eventId", adminMiddleware, async (req, res) => {
             }
         })
         
-        if (!event || event.startTime > new Date() || event.adminId !== adminId) {
+        if (!event || event.adminId !== adminId) {
             res.status(404).json({
                 error: "Cant update event"
             });
@@ -105,7 +105,7 @@ router.put("/:eventId", adminMiddleware, async (req, res) => {
 
 });
 
-router.get("/events", adminMiddleware, async (req, res) => {
+router.get("/", adminMiddleware, async (req, res) => {
     const events = await client.event.findMany({
         where: {
             adminId: req.userId
@@ -117,8 +117,9 @@ router.get("/events", adminMiddleware, async (req, res) => {
 });
 
 
-router.get("/events/:eventId", adminMiddleware, async (req, res) => {
-    const event = await getEvent(req.params.eventId ?? "");
+router.get("/:eventId", adminMiddleware, async (req, res) => {
+    const adminId = req.userId;
+    const event = await getEvent(req.params.eventId ?? "", adminId); 
 
     if (!event) {
         res.status(404).json({

@@ -9,6 +9,7 @@ export const middleware = (...secrets: string[]) => (req: Request, res: Response
             const tokenVerified = verifyToken(req, res, secret);
             if(tokenVerified){
                 next();
+                return;
             }
             
         }
