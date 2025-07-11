@@ -31,7 +31,15 @@ router.post("/", adminMiddleware, async (req, res) => {
                 locationId: data.locationId,
                 imageUrl: data.imageUrl,
                 adminId,
-                banner: data.banner
+                banner: data.banner,
+                seatTypes: {
+                    create: data.seats.map(seat => ({
+                        name: seat.name,
+                        description: seat.description,
+                        price: seat.price,
+                        capacity: seat.capacity
+                    }))
+                }    
             }
         });
         res.json({

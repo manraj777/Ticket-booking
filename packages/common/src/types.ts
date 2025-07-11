@@ -9,7 +9,10 @@ export const CreateEventSchema = z.object({
     imageUrl: z.string(),
     banner: z.string(),
     seats: z.array(z.object({
-        
+        name: z.string(),
+        description: z.string(),
+        price: z.number(),
+        capacity: z.number()
     }))
 })
 
