@@ -141,5 +141,23 @@ router.get("/:eventId", adminMiddleware, async (req, res) => {
     });
 })
 
-    
+router.put("/seat/:eventId", adminMiddleware, async (req, res) => {
+    const {data, success} = UpdateEventSchema.safeParse(req.body);
+    const adminId = req.userId;
+    const eventId = req.params.eventId ?? "";
+    if(!adminId) {
+        res.status(401).json({ 
+            error: "Unauthorized: adminId missing" 
+        });
+        return;
+    }
+
+    if(!eventId) {
+        res.status(400).json({
+            error: "Event ID is required"
+        });
+        return;
+    }
+});
+ 
 export default router;

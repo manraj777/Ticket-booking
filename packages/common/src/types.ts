@@ -31,3 +31,10 @@ export const UpdateEventSchema = z.object({
     published: z.boolean(),
     ended: z.boolean()
 })
+
+export const UpdateSeatSchema = z.object({
+    name: z.string(),
+    description: z.string(),
+    price: z.number(),
+    capacity: z.number(),
+})
