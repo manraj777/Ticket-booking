@@ -145,6 +145,14 @@ router.put("/seat/:eventId", adminMiddleware, async (req, res) => {
     const {data, success} = UpdateEventSchema.safeParse(req.body);
     const adminId = req.userId;
     const eventId = req.params.eventId ?? "";
+
+    if(!success) {
+        res.status(400).json({
+            error: "Invalid request body"
+        });
+        return;
+    }
+
     if(!adminId) {
         res.status(401).json({ 
             error: "Unauthorized: adminId missing" 
@@ -158,6 +166,13 @@ router.put("/seat/:eventId", adminMiddleware, async (req, res) => {
         });
         return;
     }
+
+    const currentSeat = await client.seatType.findMany({
+        where: {
+            eventId
+        }
+    });    
+
 });
  
 export default router;
