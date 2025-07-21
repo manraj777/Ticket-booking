@@ -33,8 +33,11 @@ export const UpdateEventSchema = z.object({
 })
 
 export const UpdateSeatSchema = z.object({
-    name: z.string(),
-    description: z.string(),
-    price: z.number(),
-    capacity: z.number(),
+    seats: z.array(z.object({
+        id: z.string(),
+        name: z.string(),
+        description: z.string(),
+        price: z.number(),
+        capacity: z.number(),
+    }))
 })
